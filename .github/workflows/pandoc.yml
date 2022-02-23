@@ -12,8 +12,8 @@ jobs:
             - name: create file list
               id: files_list
               run: |
-                mkdir -p labs/pdfs
-                echo "::set-output name=files::[$(printf '"%s", ' reports/*.md)]"
+                cd reports
+                echo "::set-output name=files::[$(printf '"%s", ' *.md)]"
     convert_to_pandoc:
         needs: [ setup ]
         runs-on: ubuntu-18.04
@@ -21,33 +21,34 @@ jobs:
             matrix:
                 file: ${{fromJson(needs.setup.outputs.matrix)}}
         steps:
-            - name: Create directory
-              env:
-                  DIR_NAME: $(basename -s .md ${{matrix.file}})
+            - uses: actions/checkout@v2
+            - name: Setup env vars
               run: |
-                mkdir -p generated/pdfs/$DIR_NAME
-                mkdir -p generated/html/$DIR_NAME
+                echo "OUTPUT=$(basename -s .md ${{matrix.file}})" >> $GITHUB_ENV
+            - name: Create directories
+              run: |
+                rm -R generated
+                mkdir -p generated/pdfs/
+                mkdir -p generated/html/
             - name: Convert mk to pdf
               uses: docker://pandoc/latex:2.17
-              env:
-                  OUTPUT_NAME: $(basename -s .md ${{matrix.file}})
               with:
-                  args: >-
-                      ${{ matrix.file }}
+                  args: >
+                      reports/${{ matrix.file }}
                       -f markdown
                       -t pdf
                       -s
-                      -o generated/pdfs/$OUTPUT_NAME/$OUTPUT_NAME.pdf
+                      --output=generated/pdfs/${{env.OUTPUT}}.pdf
             - name: Convert mk to html
               uses: docker://pandoc/latex:2.17
               with:
-                  args: > 
-                      ${{ matrix.file }}
+                  args: >
+                      reports/${{ matrix.file }}
                       -f markdown
                       -t html
                       --mathml
                       -s
-                      -o generated/pdfs/$OUTPUT_NAME/$OUTPUT_NAME.pdf
+                      --output=generated/html/${{env.OUTPUT}}.html
             - name: Push to repo
               run: |
                 git config user.name "github-actions[bot]"
