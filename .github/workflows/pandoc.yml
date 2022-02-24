@@ -25,11 +25,9 @@ jobs:
             - name: Setup env vars
               run: |
                 echo "OUTPUT=$(basename -s .md ${{matrix.file}})" >> $GITHUB_ENV
-            - name: Create directories
+            - name: Create directory
               run: |
-                rm -R generated
-                mkdir -p generated/pdfs/
-                mkdir -p generated/html/
+                mkdir artifacts
             - name: Convert mk to pdf
               uses: docker://pandoc/latex:2.17
               with:
@@ -38,7 +36,7 @@ jobs:
                       -f markdown
                       -t pdf
                       -s
-                      --output=generated/pdfs/${{env.OUTPUT}}.pdf
+                      --output=artifacts/${{env.OUTPUT}}.pdf
             - name: Convert mk to html
               uses: docker://pandoc/latex:2.17
               with:
@@ -48,7 +46,30 @@ jobs:
                       -t html
                       --mathml
                       -s
-                      --output=generated/html/${{env.OUTPUT}}.html
+                      --output=artifacts/${{env.OUTPUT}}.html
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                  name: artifacts_${{env.OUTPUT}}
+                  path: artifacts
+    push_to_repo:
+        needs: [ convert_to_pandoc ]
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v2
+            - name: Create directories
+              run: |
+                rm -R generated
+                mkdir -p generated/pdfs/
+                mkdir -p generated/html/
+            - name: Download artifacts
+              uses: actions/download-artifact@v2
+              with:
+                  path: artifacts/
+            - name: Move artifacts
+              run: |
+                cp artifacts/**/*.html generated/html/
+                cp artifacts/**/*.pdf generated/pdf/
             - name: Push to repo
               run: |
                 git config user.name "github-actions[bot]"
