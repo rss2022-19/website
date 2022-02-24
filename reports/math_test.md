@@ -5,11 +5,13 @@ title: Some Math Rendering Tests
 Not very strenuous, but here we go!
 
 Binomial R.V. (n, p):
+
 - $\text{p}(X = k) = {n\choose k} p^n(1-p)^{n-k}$ where $k \in [0, \infty)$
 
 But for now we aren't going to prove anything about these limits.
 
 Let $X$ be a binomial random value with parameters ($n, p$).
+
 - What is $E[X]$?
     - $E[X] = \sum_{k=0}^n p(X = k)k = \sum_{k=0}^n {n \choose k}p^kq^{n-k}k$ where $q = 1 - p$.
 		- ${n \choose i } = \frac{n \times (n-1) \times ... \times (n-i+1)}{i\times(i-1)\times ... \times(1)}$
@@ -23,7 +25,9 @@ Let $X$ be a binomial random value with parameters ($n, p$).
 		- $E_1, E_2, ..., E_n$
 		- $\forall i . p(E_i) = p$
 		- $E[\text{\# events that happen}] = E[\sum_{i=1}^n1_{E_i}]=\sum_{i=1}^nE[1_{E_i}]=np$
+		
 Let $X$ be binomial $(n, p)$ and fix $k \geq 1$ . What is $E[X^k]$?
+
 - Recall identity: $i {n \choose i} = n {n - 1 \choose i - 1}$
 - Generally, $E[X^k]$ can be rewritten as: $$\sum_{i=0}^n i{n\choose i}p^i(1-p)^{n-i}i^{k-1}$$
 - Identity gives: $$E[X^k] = np\sum_{i=1}^n{n-1\choose i - 1}p^{i-1}(1-p)^{n-1}i^{k-1} = $$
