@@ -11,7 +11,7 @@ But for now we aren't going to prove anything about these limits.
 
 Let $X$ be a binomial random value with parameters ($n, p$).
 - What is $E[X]$?
-	- $E[X] = \sum_{k=0}^n p(X = k)k = \sum_{k=0}^n {n \choose k}p^kq^{n-k}k$ where $q = 1 - p$.
+    - $E[X] = \sum_{k=0}^n p(X = k)k = \sum_{k=0}^n {n \choose k}p^kq^{n-k}k$ where $q = 1 - p$.
 		- ${n \choose i } = \frac{n \times (n-1) \times ... \times (n-i+1)}{i\times(i-1)\times ... \times(1)}$
 		- Important identity: $i {n \choose i} = n {n - 1 \choose i - 1}$
 	- Using the identity: $$E[X] = \sum_{i=0}^ni{n \choose i}p^iq^{n-i} = \sum_{i=1}^nn{n - 1\choose i-1}p^iq^{n-i}$$
