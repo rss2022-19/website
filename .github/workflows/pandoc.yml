@@ -69,7 +69,7 @@ jobs:
             - name: Move artifacts
               run: |
                 cp artifacts/**/*.html generated/html/
-                cp artifacts/**/*.pdf generated/pdf/
+                cp artifacts/**/*.pdf generated/pdfs/
             - name: Push to repo
               run: |
                 git config user.name "github-actions[bot]"
