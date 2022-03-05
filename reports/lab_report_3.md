@@ -44,7 +44,7 @@ After preprocessing, there was enough information to develop the actual wall fol
 
 $$u=-SIDE \cdot K_p e(t) + K_d * \frac{de}{dt}$$
 
-$$e = \text{DESIRED_DISTANCE} - d$$
+$$e = \text{DESIRED\_DISTANCE} - d$$
 
 $$\frac{de}{dt} = m\cdot VELOCITY $$
 
