@@ -43,6 +43,7 @@ jobs:
               with:
                   args: >
                       reports/${{ matrix.file }}
+                       --resource-path=reports/img/
                       -f markdown
                       -t html
                       --mathml
