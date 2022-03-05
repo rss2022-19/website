@@ -274,26 +274,10 @@ include information from both walls. As a result, a linear fit causes
 the estimated wall to be diagonal between these two walls. While this
 was an important factor in helping the racecar navigate corners, it is
 technically not an accurate representation of the wall.</p>
-<table>
-<colgroup>
-<col style="width: 49%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th
-style="text-align: center;"><img src="img/lab3/image_left.png" width="50%"></th>
-<th
-style="text-align: center;"><img src="img/lab3/image_right.png" width="50%"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Simlulation following wall</td>
-<td style="text-align: center;">Simulation following corner</td>
-</tr>
-</tbody>
-</table>
+<p><img src="img/lab3/image_left.png%20width=50%"
+alt="Simulation following wall" /> <img
+src="img/lab3/image_right.png%20width=50%"
+alt="Simulation following corner" /></p>
 <p>After preprocessing, there was enough information to develop the
 actual wall following controller, which gives the car turning directions
 based on how well it was navigating the environment. The formula for the
@@ -412,19 +396,11 @@ value, representing how close we might expect to come to the wall during
 normal operations, influenced both our stopping distance and stopping
 time, setting a maximum value of 0.75 meters for the stopping distance,
 and of 1.5 seconds for the stopping time.</p>
-<table>
-<thead>
-<tr class="header">
-<th
-style="text-align: center;"><img src="img/lab3/unnamed.png" width="100%"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Distance over time error</td>
-</tr>
-</tbody>
-</table>
+<figure>
+<img src="./img/lab3/unnamed.png%20width=100%"
+alt="Distance over time error" />
+<figcaption aria-hidden="true">Distance over time error</figcaption>
+</figure>
 <p>The shortest distance in which the robot could stop, a value
 determined by the robot’s velocity prior to stopping, needed to be
 experimentally determined. Outside research investigating the stopping
