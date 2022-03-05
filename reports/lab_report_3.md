@@ -37,6 +37,7 @@ As we iterated upon this wall-detection process, we decided to filter our laser 
 Figures A and B show the racecar navigating a simulation environment, with the red line representing the estimated wall. As we see in Figure A, we can see our wall-detection method accurately visualizes the relevant wall as the racecar is adjacent to it. It is important to note the nature of this technique at the intersection of two walls. As illustrated in Figure B, once the car approaches a corner, the filtered subset of points will include information from both walls. As a result, a linear fit causes the estimated wall to be diagonal between these two walls. While this was an important factor in helping the racecar navigate corners, it is technically not an accurate representation of the wall.  
 
 ![Simulation following wall](lab3/image_left.png){width=50%}
+
 ![Simulation following corner](lab3/image_right.png){width=50%}
 
 After preprocessing, there was enough information to develop the actual wall following controller, which gives the car turning directions based on how well it was navigating the environment. The formula for the wall controller is listed below.
