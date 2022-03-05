@@ -36,8 +36,8 @@ To go more into details of the implementation, we first converted each of the la
 As we iterated upon this wall-detection process, we decided to filter our laser scan data prior to fitting a line to our data. We did this by only considering points/scans that were within a certain distance to the car. We reasoned that this filtering would ensure the car would only be trying to follow portions of the wall that were closest to it, with this most relevant “portion” updating as the racecar moved. It seems that filtering solely the angle of the laser scan does not guarantee that the car won’t try to follow irrelevant walls. Thus, adding an extra layer of filtering via distance helped eliminate the detection of secondary walls or too-far obstacles and made sure that the car would only follow a wall once it was within a close enough radius.
 Figures A and B show the racecar navigating a simulation environment, with the red line representing the estimated wall. As we see in Figure A, we can see our wall-detection method accurately visualizes the relevant wall as the racecar is adjacent to it. It is important to note the nature of this technique at the intersection of two walls. As illustrated in Figure B, once the car approaches a corner, the filtered subset of points will include information from both walls. As a result, a linear fit causes the estimated wall to be diagonal between these two walls. While this was an important factor in helping the racecar navigate corners, it is technically not an accurate representation of the wall.  
 
-![Simulation following wall](img/lab3/image_left.png){width=50%}
-![Simulation following corner](img/lab3/image_right.png){width=50%}
+![Simulation following wall](lab3-image_left.png){width=50%}
+![Simulation following corner](lab3-image_right.png){width=50%}
 
 After preprocessing, there was enough information to develop the actual wall following controller, which gives the car turning directions based on how well it was navigating the environment. The formula for the wall controller is listed below.
 
@@ -70,7 +70,7 @@ Another mechanism of the safety control software is its ability to check time to
 
 Our choices of both stopping distances were bounded by our distance error while following the wall and the minimum braking distance of the robot. If the stopping distance was chosen to be higher than the difference between our desired distance to the wall and experimental distance error, the robot may trigger a stop while in the process of turning around a corner and adjusting itself to the new wall. This value, representing how close we might expect to come to the wall during normal operations, influenced both our stopping distance and stopping time, setting a maximum value of 0.75 meters for the stopping distance, and of 1.5 seconds for the stopping time. 
 
-![Distance over time error](/img/lab3/unnamed.png){width=100%}
+![Distance over time error](lab3-unnamed.png){width=100%}
 
 The shortest distance in which the robot could stop, a value determined by the robot’s velocity prior to stopping, needed to be experimentally determined. Outside research investigating the stopping range of cars shows an approximately linear relationship between car velocity and stopping range. This means the time constant, which is multiplied by the robot’s velocity, can acceptably be set to a constant value. (Greibe, P. (2007). Braking distance, friction and behavior. Trafitec, Scion-DTU.)
 Choosing a method for filtering our scans based on angles allows a variable width that correlates that angle with our stopping distance at a ratio of about 10%. An advantage this brings to our robot is an increase in caution when our velocity and time determined stopping distance increase. The width we detect will be able to see and be sensitive to obstacles further out in distance from our robot’s straight course, which allows for both variations in course and moving objects to be detected in useful areas.
