@@ -43,7 +43,7 @@ Figures A and B show the racecar navigating a simulation environment, with the r
 After preprocessing, there was enough information to develop the actual wall following controller, which gives the car turning directions based on how well it was navigating the environment. The formula for the wall controller is listed below.
 
 $u=-SIDE \cdot K_p e(t) + K_d * \frac{de}{dt}$
-$e = DESIRED\_DISTANCE - d$
+$e = \text{DESIRED_DISTANCE} - d$
 $ \frac{de}{dt} = m\cdot VELOCITY $
 
 The first set of terms, -SIDE * Kp * e(t) is what allows the racecar to maintain the desired distance to the car. The error term here is simply distance error, where actual distance (d) between the car and wall is the y-intercept of the wall line. The second set of terms, Kd*de/dt is what allows the car to stay parallel to the wall. The term de/dt is a bit of a misnomer here because it is not actually the derivative of the error term. In this case, it is dependent on the slope of the wall relative to the car. The final output of the controller, u, is what indicates the angle and direction at which the car should turn in order to correct for these errors as it traverses a room. 
