@@ -55,16 +55,16 @@ $p(z_k | x_k, m) = \prod_{i=1}^{n} p(z_k^{(i)}  | x_k, m)$
 
 There are a few different probabilities that must be considered when calculating the likelihood for an individual range.  These include the case of detecting something that is known, receiving a short measurement, receiving an overly large measurement, or getting a completely random range measurement. The formulas for each case, respectively, are as follows:
 
-$$p_{hit}(z_k^{(i)} | x_k, m) = \begin{cases} \eta \frac{1}{2\pi\sigma^2} \exp( \frac{(z_k^{(i)} - d)^2}{2\sigma^2}) & \text{if} & 0 \leq z_k \leq z_{max} \\ 0  & \text{else} \end{cases}$$
+$$p_{hit}(z_k^{(i)} | x_k, m) = \begin{cases} \eta \frac{1}{2\pi\sigma^2} \exp( \frac{(z_k^{(i)} - d)^2}{2\sigma^2}) & \text{if } 0 \leq z_k \leq z_{max} \\ 0  & \text{else} \end{cases}$$
 
-$$p_{short}(z_k^{(i)} | x_k, m) = \frac{2}{d} \begin{cases} 1 - \frac{z_k^{(i)}}{d} & \text{if} & 0 \leq z_k^{(i)} \leq d & \text{and} & d \ne 0 \\ 0 & \text{else} \end{cases}$$
+$$p_{short}(z_k^{(i)} | x_k, m) = \frac{2}{d} \begin{cases} 1 - \frac{z_k^{(i)}}{d} & \text{if } 0 \leq z_k^{(i)} \leq d \text{ and } d \ne 0 \\ 0 & \text{else} \end{cases}$$
 
-$$p_{max}(z_k^{(i)} | x_k, m) = \begin{cases} 1 & \text{if} & z_k^{(i)} = z_{max} \\ 0 & \text{else} \end{cases}$$
+$$p_{max}(z_k^{(i)} | x_k, m) = \begin{cases} 1 & \text{if } z_k^{(i)} = z_{max} \\ 0 & \text{else} \end{cases}$$
 
-$$p_{rand}(z_k^{(i)} | x_k, m) = \begin{cases} \frac{1}{z_{max}} & \text{if} & 0 \leq z_k^{(i)} \leq z_{max} \\ 0 & \text{else} \end{cases}$$
+$$p_{rand}(z_k^{(i)} | x_k, m) = \begin{cases} \frac{1}{z_{max}} & \text{if } 0 \leq z_k^{(i)} \leq z_{max} \\ 0 & \text{else} \end{cases}$$
 
 
-The final probability of the particle is computed as a weighted average of each of these cases, each with their own weight parameter $ \alpha_{hit}, \alpha_{short}, \alpha_{max}, \alpha_{rand}$
+The final probability of the particle is computed as a weighted average of each of these cases, each with their own weight parameter $\alpha_{hit}, \alpha_{short}, \alpha_{max}, \alpha_{rand}$.
 
 In order to eliminate the need to recompute these formulas for each range of each particle, we stored precomputed range probabilities in a discretized table. This table is a 200x200 grid representing different values of $d$ and $z_k^{(i)}$, the particle scan’s range value and the LIDAR range value, respectively.  This table makes calculating whole particle probabilities much more efficient at runtime, where we then calculate the product of each range probability by looking them up in the precomputed table.
 
