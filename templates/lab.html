@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block header %}
+<link rel="stylesheet" href="/lab_style.css">
+{% endblock %}
+
+{% block content %}
+<header class="title_img w3-display-container w3-grayscale-min">
+    <div class="w3-display-bottommiddle w3-text-white w3-center">
+        <h1 class="w3-center" style="font-weight:bold">LAB WORK</h1> </br>
+        <p class="w3-center" style="font-weight:bold">What we've done for Robotics: Science and Systems</p>
+    </div>
+</header>
+
+<div class="w3-row-padding w3-row w3-white" id="labs">
+    {% for page in section.pages %}
+    <div class="w3-col l6 m6 w3-margin-bottom" style="margin-top:16px;max-width:50%">
+        <div class="w3-card w3-center" style="min-height:600px">
+            </br>
+            {% if page.extra.image %}
+            {% set image = resize_image(path=page.extra.image, width=500, op="fit_width") %}
+            <img src="{{image.url}}" alt="{{page.title}}" onclick="onClick(this)" class="w3-hover-opacity">
+            {% else %}
+            {% set image = resize_image(path="/img/charles.jpg", width=500, op="fit_width") %}
+            <img src="{{image.url}}" alt="{{page.title}}" onclick="onClick(this)" class="w3-hover-opacity">
+            {% endif %}
+            <div class="w3-container" style="margin-top:auto">
+                <h3><a href="{{ page.permalink | safe }}">{{page.title}}</a></h3>
+                <p>{{page.description}}</p>
+                <p><a href="{{ page.permalink | safe }}"><button class="w3-button w3-light-grey w3-block"><i
+                                class="fa fa-info-circle"></i>
+                            More info</button></a></p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-64">
+    <a href="#labs" class="w3-button w3-light-grey"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
+    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank"
+            class="w3-hover-text-green">w3.css</a></p>
+</footer>
+
+<script>
+    // Modal Image Gallery
+    function onClick(element) {
+        document.getElementById("img01").src = element.src;
+        document.getElementById("modal01").style.display = "block";
+        var captionText = document.getElementById("caption");
+        captionText.innerHTML = element.alt;
+    }
+
+    // Toggle between showing and hiding the sidebar when clicking the menu icon
+    var mySidebar = document.getElementById("mySidebar");
+
+    function w3_open() {
+        if (mySidebar.style.display === 'block') {
+            mySidebar.style.display = 'none';
+        } else {
+            mySidebar.style.display = 'block';
+        }
+    }
+
+    // Close the sidebar with the close button
+    function w3_close() {
+        mySidebar.style.display = "none";
+    }
+</script>
+{% endblock content %}

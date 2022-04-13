@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>RSS Team 19</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% block header %}
+    {% endblock %}
+</head>
+
+<body>
+    <!-- Stick the navbar here? -->
+    <!-- If you change something in the Navbar you have to change it on each page (sit on top) -->
+    <!-- MAKE SURE YOU GET THE RELATIVE PATHS RIGHT FOR THE NAV BAR!!!!-->
+    <div class="w3-top">
+        <div class="w3-bar w3-white w3-card" id="myNavbar">
+            <a href="/#home" class="w3-bar-item w3-button w3-wide">RSS Team 19</a>
+            <!-- Right-sided navbar links -->
+            <div class="w3-right w3-hide-small">
+                <a href="/#about" class="w3-bar-item w3-button">About</a>
+                <a href="/labs/" class="w3-bar-item w3-button"><i class="fa fa-folder"></i>Labs</a>
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="w3-bar-item w3-button"><i
+                        class="fa fa-camera"></i>Videos</a>
+                <a href="https://github.com/rss2022-19" class="w3-bar-item w3-button"><i
+                        class="fa fa-github-square"></i>Github</a>
+            </div>
+            <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+            <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
+                onclick="w3_open()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Sidebar on small screens when clicking the menu icon -->
+    <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large"
+        style="display:none" id="mySidebar">
+        <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close
+            X</a>
+        <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+        <a href="labs/" onclick="w3_close()" class="w3-bar-item w3-button">Labs</a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="w3_close()"
+            class="w3-bar-item w3-button">Videos</a>
+        <a href="https://github.com/rss2022-19" onclick="w3_close()" class="w3-bar-item w3-button">Github</a>
+    </nav>
+    <!-- End of repeated content on each page-->
+
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
