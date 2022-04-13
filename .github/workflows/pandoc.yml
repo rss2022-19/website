@@ -54,14 +54,14 @@ jobs:
               with:
                   name: artifacts_${{env.OUTPUT}}
                   path: artifacts
-    push_to_repo:
+    build_zola:
         needs: [ convert_to_pandoc ]
         runs-on: ubuntu-18.04
         steps:
             - uses: actions/checkout@v2
             - name: Create directories
               run: |
-                rm -R generated
+                rm -R static/generated
                 mkdir -p static/generated/pdfs/
                 mkdir -p static/generated/html/
             - name: Download artifacts
@@ -70,15 +70,14 @@ jobs:
                   path: artifacts/
             - name: Move artifacts
               run: |
-                cp static/artifacts/**/*.html generated/html/
-                cp static/artifacts/**/*.pdf generated/pdfs/
-            - name: Push to repo
-              run: |
-                git config user.name "github-actions[bot]"
-                git config user.email "github-actions[bot]@users.noreply.github.com"
-                
-                git add generated/
-                git commit -m "Push generated pdfs/html"
-                git push
+                mv artifacts/**/*.html static/generated/html/
+                mv static/artifacts/**/*.pdf static/generated/pdfs/
+            - name: Build Zola and Deploy
+              uses: shalzz/zola-deploy-action@v0.15.3
+              env:
+                # Target branch
+                PAGES_BRANCH: gh-pages
+                # Provide personal access token
+                TOKEN: ${{ secrets.TOKEN }}
                     
                     
