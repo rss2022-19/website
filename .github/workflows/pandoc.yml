@@ -71,7 +71,7 @@ jobs:
             - name: Move artifacts
               run: |
                 mv artifacts/**/*.html static/generated/html/
-                mv static/artifacts/**/*.pdf static/generated/pdfs/
+                mv artifacts/**/*.pdf static/generated/pdfs/
             - name: Build Zola and Deploy
               uses: shalzz/zola-deploy-action@v0.15.3
               env:
