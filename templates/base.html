@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     {% block header %}
     {% endblock %}
+    <style>
+        /* Full height image header */
+        .title_img {
+            background-position: center;
+            background-size: cover;
+            background-image: url("{{ config.base_url | safe }}/img/mit.jpg");
+            height: 30%;
+            /* max-height: 30%; */
+        }
+    </style>
 </head>
 
 <body>
