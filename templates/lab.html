@@ -18,12 +18,12 @@
         <div class="w3-card w3-center" style="min-height:600px">
             </br>
             {% if page.extra.image %}
-            {% set image = resize_image(path=page.extra.image, width=500, op="fit_width") %}
-            <img src="{{image.url}}" alt="{{page.title}}" onclick="onClick(this)" class="w3-hover-opacity">
+            {% set image_url = page.extra.image %}
             {% else %}
-            {% set image = resize_image(path="/img/charles.jpg", width=500, op="fit_width") %}
-            <img src="{{image.url}}" alt="{{page.title}}" onclick="onClick(this)" class="w3-hover-opacity">
+            {% set image_url = "/img/charles.jpg" %}
             {% endif %}
+            {% set image = resize_image(path=image_url, width=500, op="fit_width") %}
+            <img src="{{image.url | safe}}" alt="{{page.title}}" class="w3-hover-opacity">
             <div class="w3-container" style="margin-top:auto">
                 <h3><a href="{{ page.permalink | safe }}">{{page.title}}</a></h3>
                 <p>{{page.description}}</p>
@@ -43,22 +43,6 @@
         document.getElementById("modal01").style.display = "block";
         var captionText = document.getElementById("caption");
         captionText.innerHTML = element.alt;
-    }
-
-    // Toggle between showing and hiding the sidebar when clicking the menu icon
-    var mySidebar = document.getElementById("mySidebar");
-
-    function w3_open() {
-        if (mySidebar.style.display === 'block') {
-            mySidebar.style.display = 'none';
-        } else {
-            mySidebar.style.display = 'block';
-        }
-    }
-
-    // Close the sidebar with the close button
-    function w3_close() {
-        mySidebar.style.display = "none";
     }
 </script>
 {% endblock content %}
