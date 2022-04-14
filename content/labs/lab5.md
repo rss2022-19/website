@@ -10,7 +10,7 @@ description = "Implementation of a wall follower, and a safety controller"
 <!-- Inlude links to your presentation and a download of your report pdf: -->
 [Link to Presentation](https://docs.google.com/presentation/d/e/2PACX-1vS6v-BlLa7zH5_s1X8sCrjhF5C2X-qRegAf2jO7nvGrsMWj8jOPXZ4UyBhhQYduPHQNCkDDNLJ7hQWk/pub?start=false&loop=false&delayms=3000)
 
-<a href="/generated/pdfs/lab_report_5.pdf" type="application/pdf" download>Link to Download Lab Report</a>
+{{ lab_report(pdf='/generated/pdfs/lab_report_5.pdf') }}
 
 <!-- Inlude your presentation in your site by exporting it via google slides: (DONE) -->
 <iframe
@@ -19,5 +19,4 @@ description = "Implementation of a wall follower, and a safety controller"
         webkitallowfullscreen="true"></iframe>
 
 <!-- Include a PDF of your lab report here: -->
-<iframe src="/generated/pdfs/lab_report_5.pdf" type="application/pdf" width="720px" height="935px">
-</iframe>
+{{ lab_frame(pdf='/generated/pdfs/lab_report_5.pdf') }}

@@ -16,11 +16,10 @@ You should provide links to your presentation and a way to download your lab rep
 
 [Link to Presentation](https://docs.google.com/presentation/d/e/2PACX-1vQ0qMjXH6GAIw3KrEqJP8TsL_i9iaKy5kkEDcu7QEJ6X1KPtbO4gbtbQacIIO-HuzYYVIuSlAT0O-lK/pub?start=false&loop=false&delayms=3000)
 
-<a href="/generated/pdfs/lab_report_3.pdf" type="application/pdf" download>Link to Download Lab Report</a>
+{{ lab_report(pdf='/generated/pdfs/lab_report_3.pdf') }}
 
 <!-- Inlude your presentation in your site by exporting it via google slides: (DONE) -->
 <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQ0qMjXH6GAIw3KrEqJP8TsL_i9iaKy5kkEDcu7QEJ6X1KPtbO4gbtbQacIIO-HuzYYVIuSlAT0O-lK/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
 <!-- Include a PDF of your lab report here: -->
-<iframe src="/generated/pdfs/lab_report_3.pdf" type="application/pdf" width="720px" height="935px">
-</iframe>
+{{ lab_frame(pdf='/generated/pdfs/lab_report_3.pdf') }}
