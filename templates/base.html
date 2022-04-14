@@ -18,11 +18,11 @@
     <!-- MAKE SURE YOU GET THE RELATIVE PATHS RIGHT FOR THE NAV BAR!!!!-->
     <div class="w3-top">
         <div class="w3-bar w3-white w3-card" id="myNavbar">
-            <a href="/#home" class="w3-bar-item w3-button w3-wide">RSS Team 19</a>
+            <a href="{{ config.base_url }}/#home" class="w3-bar-item w3-button w3-wide">RSS Team 19</a>
             <!-- Right-sided navbar links -->
             <div class="w3-right w3-hide-small">
-                <a href="/#about" class="w3-bar-item w3-button">About</a>
-                <a href="/labs/" class="w3-bar-item w3-button"><i class="fa fa-folder"></i>Labs</a>
+                <a href="{{ config.base_url }}/#about" class="w3-bar-item w3-button">About</a>
+                <a href="{{ config.base_url }}/labs/" class="w3-bar-item w3-button"><i class="fa fa-folder"></i>Labs</a>
                 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="w3-bar-item w3-button"><i
                         class="fa fa-camera"></i>Videos</a>
                 <a href="https://github.com/rss2022-19" class="w3-bar-item w3-button"><i
@@ -43,8 +43,8 @@
         style="display:none" id="mySidebar">
         <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close
             X</a>
-        <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
-        <a href="labs/" onclick="w3_close()" class="w3-bar-item w3-button">Labs</a>
+        <a href="{{ config.base_url }}/#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+        <a href="{{ config.base_url }}/labs/" onclick="w3_close()" class="w3-bar-item w3-button">Labs</a>
         <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="w3_close()"
             class="w3-bar-item w3-button">Videos</a>
         <a href="https://github.com/rss2022-19" onclick="w3_close()" class="w3-bar-item w3-button">Github</a>
