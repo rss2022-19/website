@@ -2,7 +2,7 @@
 title = "Lab 4: Visual Servoing"
 date = 2022-04-13
 weight = 1
-description = "Implementation of a wall follower, and a safety controller"
+description = "Implementation of visual servoing tasks: following cones and lines"
 +++
 
 # Required: presentation

@@ -2,7 +2,7 @@
 title = "Lab 6: Path Planning & Pure Pursuit"
 date = 2022-04-13
 weight = 3
-description = "Implementation of a wall follower, and a safety controller"
+description = "Implementation of path planning and pure pursuit"
 +++
 
 # Required: presentation and lab report pdf

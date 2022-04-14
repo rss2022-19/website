@@ -1,8 +1,8 @@
 +++
-title = "Lab 5: Wall Follower"
+title = "Lab 5: Localization"
 date = 2022-04-13
 weight = 2
-description = "Implementation of a wall follower, and a safety controller"
+description = "Implementation of localization using Monte Carlo Particle Filter"
 +++
 
 # Required: presentation and report pdf
