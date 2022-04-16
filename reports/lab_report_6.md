@@ -6,7 +6,7 @@
 
 # Lab 6 Report: "Go Here, Go There, Go Everyehere!" Path Planning and Pure Pursuit with Team 19
 
-## Introduction
+## Introduction 
 
 As we iterate on our car’s ability to autonomously navigate its environment, a crucial capability is being able to maneuver to any reachable destination. The process to achieve this goal includes two components: path planning and pure pursuit. 
 
@@ -14,68 +14,50 @@ Path planning defines the car’s ability to determine a collision-free path fro
 
 Once a desired path has been determined by the A* algorithm, our car must autonomously drive along the created path. We achieved this capability by implementing a pure pursuit algorithm, which allows the car to track the path by creating a series of intermittent goal points to follow. By looking ahead to some desired point on the path, pure pursuit determines the optimal steering angle that our car must drive at to reach that intermittent goal. This process continues as new goals are formed until the path has been completed. 
 
-Integrating these two modules required more than just these two components. For one, we used this lab as an opportunity to improve upon our robot’s safety controller, which allows us to do more rigorous testing on the car moving forward. Additionally, there was a series of dependencies between past and present modules. The first requirements were localizing two points in the map space: our car’s initial position and the desired final destination. Doing so allowed path planning to then determine an optimal path given the constraints of Stata. Once this was complete, pure pursuit was able to read the desired path and our car successfully traversed from its initial pose to the goal location. 
+Integrating these two modules required more than just these two components. For one, we used this lab as an opportunity to improve upon our robot’s safety controller, which allows us to do more rigorous testing on the car moving forward. Additionally, there was a series of dependencies between past and present modules. The first requirements were localizing two points in the map space: our car’s initial position and the desired final destination. Doing so allowed path planning to then determine an optimal path given the constraints of Stata. Once this was complete, pure pursuit was able to read the desired path, and our car successfully traversed from its initial pose to the goal location. 
 
 ## Technical Approach
 
 ### Path Planning 
 
-#### Search-based vs. Sampling-based
+#### Search-based vs. Sampling-based (Mary)
 
-In the early stages of the project, we considered two approaches as strong candidates for our path-planner implementation, that is, search-based planning and sample-based planning. Both approaches are well-known and well-used for path-planning tasks, and come with their benefits and tradeoffs. Search-based planning employs graph search methods to compute trajectories over a discrete representation of the problem. Sampling-based methods form trajectories by sampling for possible points and adding them to a tree until either a solution is found or time expires. Unlike search-based planning, which demands discrete graph representation of the problem, sampling-based methods can solve for paths in continuous search space. As such, for problems with large state spaces, sampling-based planning is the more computationally feasible solution. However, a major downside of sampling-based planning is that it is not a complete solution; there is always a possibility that it may run out of time before being able to find a path. Moreover, even if it is able to find a path, it may be sub-optimal, inefficient and unusual-looking. In contrast, search-based planning is complete. If the search-based planner does return a path, it will be guaranteed to be most optimal path (based on the measure of optimality we coded in the algorithm), and if it does not, we know for certain that the goal is not reachable.
+In the early stages of the project, we considered two approaches as strong candidates for our path-planner implementation, that is, search-based planning and sample-based planning. Both approaches are well-used for path-planning tasks and come with their own set of benefits and tradeoffs. Search-based planning employs graph search methods to compute trajectories over a discrete representation of the problem. Sampling-based methods form trajectories by sampling for possible points and adding them to a tree until either a solution is found or time expires. Unlike search-based planning, which demands discrete graph representation of the problem, sampling-based methods can solve for paths in continuous search space. As such, for problems with large state spaces, sampling-based planning is the more computationally feasible solution. However, a major downside of sampling-based planning is that it is not a complete solution; there is always a possibility that it may run out of time before being able to find a path. Moreover, even if it is able to find a path, it may be sub-optimal and unusual-looking. In contrast, search-based planning is complete. If the search-based planner does return a path, it will be guaranteed to be most optimal (based on the measure of optimality we coded in the algorithm), and if it does not, we know for certain that the goal is not reachable.
 
-Having an 1300x1730 pixel occupancy grid of our environment from the beginning of the project, our problem lended itself to a straightforward discrete representation as a pixel-unit grid. Moreover, our state space is very small, a mere (x,y) coordinate space. With these numbers in mind, we determined that it would be more than feasible to tackle this problem with a search-based planner. In addition, we noted that the completeness guarantees of search-based planning would be extremely helpful to achieving most optimal paths for our race car. Thus, we decided to implement a search-based planner.
+Having an 1300x1730 (pixel units) occupancy grid of our environment from the beginning of the project, our problem lended itself to a straightforward discrete representation as a pixel-unit grid. Moreover, our state space is very small, a mere (x,y) coordinate space. With these numbers in mind, we determined that it would be more than feasible to tackle our problem with a search-based planner. In addition, we noted that the completeness guarantees of search-based planning would be extremely helpful to achieving efficient paths for our racecar. Thus, we decided to implement a search-based planner.
 
 ### Path Planning Technical Implementation
 
-Overall, search-based planning essentially breaks down into two problems, first how to turn the problem into a discrete graph representation and second how to search this graph for the most optimal path. 
+Overall, search-based planning essentially breaks down two stages: first we need to turn the problem into a discrete graph representation; second we need to search this graph for the most optimal path. 
 
-#### Determining Realistic Collision-free Search Space
-First, we needed to determine the search space of the problem, that is, where the robot could be without colliding with obstacles. We have prior knowledge of its environment, a 1300x1730 (pixel-unit) occupancy map of the stata basement. This occupancy map is basically a binary map, 1 where there is an obstacle and 0 otherwise. This occupancy map would be sufficient, if our robot was a point mass. However, in real life, our robot has dimensions (height, width, etc), which we need to take into account when constructing our collision-free search space. To address this, we used cv2’s dilation tool to dilate the occupied portions of the occupancy map, as shown in Figure 1. We can see from the figure that dilating the occupancy map results in a realistic collision-free space for our robot. Determining how much we needed to dilate the occupancy map was an empirical process; in other words, we eyeballed and adjusted the dilation process based on the racecar experiments we observed in simulation and in real life.
-
-
-
-#### Discretizing Continuous Search Space into Pixel-based Grid Space
-
-Now that we have a realistic collision-free search space, we discretized it into a grid space based on pixel units. This is equivalent to a graph, where a “node” could be any set of (x,y) pixel coordinates in the grid. Our graph representation is set, but there is another part of the problem: our robot doesn’t operate in pixels. It operates in real-world coordinates. Thus, we needed to be able to convert between real-world coordinates of our robot’s map frame and the pixel-coordinates of our grid. 
-
-To convert from pixel to real world coordinates, we use the quaternion of the real world map’s origin to calculate the rotation matrix  $R_{rw}$, which we use to construct the conversion matrix $A_{pix \rightarrow rw}$. 
-
-$A_{pix \rightarrow rw} = \begin{bmatrix}
- R_{rw, (0,0)} &R_{rw, (0,1)}& x_{rw}\\ 
- R_{rw, (1,0)} &R_{rw, (1,1)}& y_{rw}\\ 
-0 &0  & 1
-\end{bmatrix}$
+#### Determining Realistic Collision-free Search Space (Mary)
+First step, we need to determine the search space of the problem, that is, where the robot could be without colliding with obstacles. We have prior knowledge of its environment, a 1300x1730 (pixel-unit) occupancy map of the stata basement. This occupancy map is a binary array, 1 where there is an obstacle and 0 otherwise. This occupancy map would be sufficient, if our robot was a point mass. However, in real life, our robot has dimensions (height, width, etc), which we need to take into account when constructing our collision-free search space. To address this, we use cv2’s dilation tool to dilate the occupied portions of the occupancy map, as shown in Figure 1. We can see from the figure that dilating the occupancy map results in a realistic collision-free space for our robot. (Determining how much we needed to dilate the occupancy map was an empirical process; in other words, we eyeballed and adjusted the dilation process based on the racecar experiments we observed in simulation and in real life).
 
 
-We multiply our pixel points (x,y) with the map resolution (MR), which is the number of meters per pixel (m/pix). Then we apply the matrix $A_{pix \rightarrow rw}$ to this, which will yield us the real-world corresponding coordinates.
 
-$A_{pix \rightarrow rw} \left ( \begin{bmatrix}
-x_{pix}\\ 
-y_{pix}\\ 
+#### Discretizing Continuous Search Space into Pixel-based Grid Space (Mary)
 
-\frac{1}{MR}\end{bmatrix} * MR \right ) = \begin{bmatrix}
-x_{rw}\\ 
-y_{rw}\\ 
-1\end{bmatrix}$
+Now that we have a realistic collision-free search space, we can discretize it into a grid space based on pixel units. This is equivalent to a graph, where a “node” can be any set of (x,y) pixel coordinates from the grid. There is another part of the problem, though: our robot doesn’t operate in pixels. It operates rather, in real-world coordinates. Thus, we need to be able to convert between real-world coordinates of our robot’s map frame and the pixel-coordinates of our grid. 
 
-To convert from real-world to pixel, we can apply the same process, but inverted: multiplying by the inverse of $A_{pix \rightarrow rw}$ and dividing by the map resolution. 
+To convert from pixel to real world coordinates, we use the quaternion of the real world map’s origin to calculate the rotation matrix  $R_{rw}$, which we then use to construct the following conversion matrix $A_{pix \rightarrow rw}$. 
 
-$​​(A_{pix \rightarrow rw})^{-1} \begin{bmatrix}
-x_{rw}\\ 
-y_{rw}\\ 
-1\end{bmatrix}  * \frac{1}{MR} = \begin{bmatrix}
-x_{pix}\\ 
-y_{pix}\\
-\frac{1}{MR}
-\end{bmatrix}$
-
-Giving a high-level overview of how these conversions will be utilized, our path planner will be given a start point and end point, which will both be real-world coordinates. As our path planner’s graph search algorithm operates in the pixel state space, we convert these real-world coordinates into pixel coordinates and pass them into our planner. If there is a possible path, our planner will find this path, represented as a list of pixel point states, convert these pixel points back to real-world coordinates, and feed that real-world trajectory to the pure pursuit part of the pipeline.
+$$A_{pix \rightarrow rw} = \begin{bmatrix} R_{rw, (0,0)} &R_{rw, (0,1)}& x_{rw}\\ R_{rw, (1,0)} &R_{rw, (1,1)}& y_{rw}\\ 0 &0  & 1\end{bmatrix}$$
 
 
-### Implementation of A* algorithm to Search our Grid Space (aka Graph) (Uche)
+We multiply our pixel points (x,y) with the map resolution (MR), which is the number of meters per pixel (m/pix). Then we apply the matrix $A_{pix \rightarrow rw}$ to this, which will yield us the corresponding real-world coordinates.
 
-Specifically, among the search-based algorithms, our team chose to use the A* algorithm due to its guarantee of optimality within a reasonable timeframe. A* is the adaptation of Dijkstra’s algorithm with the insertion of a heuristic function which estimates the cost of the path from the node under evaluation to the end node, where Dijkstra’s algorithm is a graph algorithm that guarantees the lowest cost path in a weighted graph from a start to end node. If implemented with a priority queue, A* is essentially Dijkstra’s algorithm, except that the priority of items is the cost of the path up to the last node of the path + the heuristic from the last node of the path to the end goal.
+$$A_{pix \rightarrow rw} \left ( \begin{bmatrix}x_{pix}\\ y_{pix}\\ \frac{1}{MR}\end{bmatrix} * MR \right ) = \begin{bmatrix} x_{rw}\\ y_{rw}\\ 1\end{bmatrix}$$
+
+To convert from real-world to pixel, we invert the process: multiplying by the inverse of $A_{pix \rightarrow rw}$ and dividing by the map resolution. 
+
+$​​$(A_{pix \rightarrow rw})^{-1} \begin{bmatrix} x_{rw}\\ y_{rw}\\ 1\end{bmatrix}  * \frac{1}{MR} = \begin{bmatrix}x_{pix}\\ y_{pix}\\\frac{1}{MR}\end{bmatrix}$$
+
+Giving a high-level overview of how these conversions will be utilized, our path planner will be given a start point and end point, both of which are real-world coordinates. As our path planner’s graph search algorithm operates in the pixel state space, we convert these real-world coordinates into pixel coordinates and pass them into our planner. If there is a possible path, our planner will find this path of pixel points and convert them back to real-world coordinates, feeding that real-world trajectory to the pure pursuit part of the pipeline.
+
+
+#### Implementation of A* algorithm to Search our Grid Space (aka Graph) (Uche)
+
+Specifically, among the search-based algorithms, our team chose to use the A* algorithm due to its guarantee of optimality within a reasonable timeframe. A* is the adaptation of Dijkstra’s algorithm with the insertion of a heuristic function, which estimates the cost of the path from the node under evaluation to the end node. Dijkstra’s algorithm is a graph algorithm that guarantees the lowest cost path in a weighted graph from a start to end node. If implemented with a priority queue, A* is essentially Dijkstra’s algorithm, except that the priority of items is the cost of the path up to the last node of the path + the heuristic from the last node of the path to the end goal.
 
 When implementing A*, we had to choose a heuristic for the algorithm to use, where the heuristic heavily affects what kind of path and and the runtime of the algorithm. The cost of the path that our code uses is the Manhattan distance of the path, as that most closely resembles what the robot will do on the pixel map, where moving diagonally costs slightly more than moving in a straight line due to the constraints of physical distances. The optimal heuristic is the exact cost of the path to the end goal, which would guarantee minimal runtime and shortest path. However, Manhattan distances would be impossible to evaluate as a heuristic, as we would need the exact path that we would use to get to the end goal, which is what we are trying to solve for! So we must find another heuristic. An important property of the heuristic is that it never predicts a cost more than the actual cost of the exact path, in other words, the heuristic should lowerbound the actual path cost, if we want to maintain the guarantee of shortest path (even at the cost of runtime: a function that consistently reports a cost under the actual path cost will take a longer time to run than one that had the exact cost, but will return the same optimal path, rather than a function that consistently reports over the exact cost of the path, which will neither guarantee an optimal path nor a low runtime). With this in mind, the robot uses the Euclidean distance between the end node and the goal, as the distance is always less than or equal to the Manhattan distance between 2 points.
 
@@ -100,9 +82,9 @@ $$\theta = \tan^{-1}(\frac{y^{robot}_{goal}}{x^{robot}_{goal}})$$
 $$d = \sqrt((x^{robot}_{goal})^2 + (y^{robot}_{goal})^2)$$
 7.       $$steering = \tan^{-1}(\frac{2 \cdot wheelbase\_length \cdot \sin(\theta)}{d})$$
 The velocity of the robot is set proportional to its distance from the end of the path and is clipped to a constant maximum value. This ensures that the robot will drive the majority of the planned path at a constant velocity but slow down to a stop as it approaches the end.
-### Safety Controller (Sean)
+### Safety Controller (Sean) (Edited by: Uche)
 
-We also updated the safety controller in this lab to more closely align with the evolving requirements. Our path planning algorithm and pure pursuit controller can find shorter trajectories when the racecar can operate close to walls and corners. Our new safety controller is predictive - stopping the car when its trajectory intersects with an obstacle, and is less sensitive to nearby obstacles it won’t collide with.
+We also updated the safety controller in this lab to more closely align with our evolving requirements. Our path planning algorithm and pure pursuit controller can find shorter trajectories where the racecar is operating close to walls and corners, necessitating less sensitivity when navigating tight quarters. Our new safety controller is predictive - stopping the car when its trajectory intersects with an obstacle, and is less sensitive to nearby obstacles it won’t collide with.
 
 The updated safety controller utilizes two separate control areas, in which it checks whether any LIDAR ranges are present to decide on whether to stop or not. The first of these ranges is a wedge - defined by a circular arc of 10 degrees originating at the LIDAR scanner, and limited to a distance from the scanner of 0.1 meters. This short arc serves to stop the racecar before a collision with unexpected obstacles, or if the other area defined by the safety controller fails to stop the racecar in time. The short arc area is highly sensitive to LIDAR ranges, requiring only a single range to stop the racecar. This acts as a measure of last resort, in which even obstacles with thin profiles or reflective surfaces that wouldn’t normally return LIDAR signals can be stopped for, in addition to obstacles moving through the path of the racecar without warning.
 
@@ -120,36 +102,63 @@ And thus
 
 $$\Delta = [\cos(\theta)*R, \sin(\theta)*R]$$
 
-The elapsed time must be chosen carefully here. If the time is too short, the racecar won’t be able to stop in time. However, if the elapsed time is set to be too large, a gap developed between the small arc area and the rectangular area that the racecar is blind to. A sudden change in steering angle at high speeds could result in the safety controller only checking points beyond the wall it is set to collide with.
+The elapsed time must be chosen carefully here. If the time is too short, the racecar won’t be able to stop in time. However, if the elapsed time is set to be too large, a gap will develop between the small arc area and the rectangular area that the racecar is blind to. A sudden change in steering angle at high speeds could result in the safety controller only checking points beyond the wall it is set to collide with.
 
 Because the rectangular area is larger and further from the racecar than the short arc area, it’s also more likely to encompass false LIDAR ranges. To compensate for this, the stopping condition of the predictive area is that two or more LIDAR ranges are within the forward area.
 
 ## Experimental Evaluation
 
-### Gradescope
+###Path Planner Evaluation (Mary)
 
-Overall, our robot does really well at the task of planning its path, scoring a 2.99 out of 3.0 if we just take into account the path planner score. 
+#### Testing Path Planner Robustness to Various Paths
+The first thing we did to evaluate our path planner was run it through various test cases and observe if it was able to find a path if the goal was reachable, or otherwise, return a “Path Not Found” message. Here, we included images the paths generated from the test cases.
+
+![TC0: Short straight path](lab6/short_path.png)
+
+![TC1: Long straight path](lab6/long_path.png)
+
+![TC2: Simple corner turn](lab6/short_corner.png)
+
+![TC3: Complex corner turn](lab6/long_corner.png)
+
+![TC4: Leftmost to rightmost corner of the map](lab6/fork_corner.png)
+
+
+We also had a test case for impossible paths, where we placed the goal point in an unreachable area (in the occupied part of the map). Our planner always returned correctly that a path could not be found (which due to the completeness guarantee of search-based planning, we know for certain should be true).
+
+For these test cases, we also noted the amount of time our code took to run the A* algorithm. The planner always took less than 1 second to carry out A star search, even for the case where a path was not reachable (Test 4: leftmost to rightmost corner of the map). As such, it seems there is not much computational tradeoff for having a complete path planning solution.
+
+#### Testing Path Planner vs. Human
+For the second part of our path planner evaluation, we decided to compare planner-generated paths with human-drawn paths. We asked a member of our team, who did not work on the planner, upon being given a start and end point, to draw the likely path on the map that they would naturally plan for themselves to walk. We have included pictures of the human-drawn path (left) and the planner-generated path (right), as well as each path’s total distance.
+
+We can see from the test cases below that the planner consistently outperforms the human, returning a path that requires less distance for the racecar to travel. The main reason for this out-performance is the fact that the planner is able to move in ways that a human would not intuitively move. For instance, the planner tends to hug the walls and only moves across the hall when it absolutely has to (i.e. when it has to make a turn in the opposite direction or when it is nearing the goal point, which is closer to the opposite wall). In contrast, when walking along a path, humans usually prefer to move along the center and maximize their distance from the walls. The planner has no such preferences and always seeks to move in whatever way that gets the racecar to its destination most efficiently.
+
+
+Test case 0:
+
+|Human: 28.228|Planner: 26.047|
+|:==:|:==:|
+|![TC0 Handdrawn](lab6/tc0_hand.png){width=50%}|![TC0 Planned](lab6/tc0_pplan.png){width=50%}|
+
+Test case 1:
+Human	: 73.721			         Planner: 70.823
+ 
+
+Test case 2:
+Human: 55.542			          Planner: 54.652
+
+
+For these test cases, we also made sure to create situations where the robot/human would have more than one viable path to their destination. Of course, the human had no problem ascertaining which path would be most convenient, and we wanted to ensure that the robot would also have such sensibilities. As we can see from these test cases, the robot always picks the most optimal choice.
+
+### Gradescope Autograder (Uche)
+
+In terms of the Gradescope autograder, our path planner does an excellent job, scoring 2.99 out of 3.0 for the planning portion.
 
 ![Gradescope Path Planning Graph showing the staff solution and the path planner’s path](https://i.imgur.com/bpqxGAy.png)
 
-Our team also scored a 3.98 out of 4.0 for the combined path planner and pure pursuit controller. In the simulation, it drove 98.96% of the path within the allotted 500 seconds.
+Combined, the path planner and pure pursuit controller scored 3.98 out of 4.0. Also, the pure pursuit drove 98.96% of the path within the allotted 500 seconds.
 
-![Integrated graph showing staff solution, path planner path, and pure pursuit path](https://i.imgur.com/Wv4zxdP.png) 
-
-### Path planning Evaluation
-Runtime:
-Took average runtime for runs for various test cases
-< 1 second to run when testing in simulation
-Tradeoff of complexity of search-based planner not that bad
-Cases: cases in presentation + case where the planner needs to choose between two possible paths (should choose better path) + impossible path case
-Accuracy/optimality:
-Comparison of path planning to hand-written paths
-Gradescope autograder numbers
-
-Human-drawn				    Path Planner
-
-
-
+![Integrated graph showing staff solution, path planner path, and pure pursuit path](https://i.imgur.com/Wv4zxdP.png)
 
 
 ### Pure Pursuit Evaluation 
@@ -165,18 +174,18 @@ The figures below show the results of path planning and pure pursuit in simulati
 
 
 
-
-
+<!-- Stick PPU Testing 0 -->
 
 
 
 Once we were confident in simulation, we moved forward to running pure pursuit at the car level, and tested it in person with a variety of paths. Some notable outcomes are that pure pursuit was successful in navigating through Stata basement when turns were wider. However, in the case of tight corners, the car was unable to clear the corner. This is due to our static lookahead distance. In order to improve this, we should implement a variable lookahead distance to be smaller when the path has high curvature, and larger when the path is straighter.  The images below demonstrate the cars ability to use pure pursuit navigate along straight lines and wider turns according to a path created by our path planner. Again you can see that the distance error of pure pursuit is extremely low. The car manages to stay within 0.15m from the planned path, and the spikes in this error can once again be attributed to areas of higher curvature of the path. 
 
+<!-- Stick PPU Testing 1 -->
 
 
-## Updated Safety Controller Evaluation
+## Updated Safety Controller Evaluation (Sean)
 
-To evaluate the safety controller, we ran both the original and predictive safety controllers through a series of tests in simulation. Starting parallel to a wall at a distance of 0.1 meters, the racecar was given a command of constant speed and steering angle such that its trajectory is a circle. For the racecar to return to its original position, the safety controller can’t trigger as it approaches the wall at a close distance. The steering angle and speed of the racecar were modulated to simulate various scenarios. 
+To evaluate the safety controller, we ran both the original and predictive safety controllers through a series of tests in simulation. Starting parallel to a wall at a distance of 0.1 meters, the racecar was given a command of constant speed and steering angle such that its trajectory was a circle. For the racecar to return to its original position, the safety controller can’t trigger as it approaches the wall at a close distance. The steering angle and speed of the racecar were modulated to simulate various scenarios. 
 
 \begin{center}
 \begin{tabular}{||c c c c||}
@@ -206,12 +215,10 @@ To evaluate the safety controller, we ran both the original and predictive safet
 
 The predictive safety controller continues to perform at high speeds and sharp angles, while the original safety controller is over cautious and prevents the car from returning to its original position at speeds as low as 1 meter per second. 
 
-Overall:
+## Conclusion 
 
-Gradescope autograder for everything (accuracy + time)
-
-
-## Conclusion
+Both our path planning algorithm and our pure pursuit controller are effective in navigating the racecar to its destination. The path planning algorithm, through intelligent use of map discretization and management of nodes in the location queue, is capable of finding paths on time spans described in milliseconds. These paths meet the requirements of the Gradescope testing, scoring over 2.99/3, beat human intuition in path construction as shown in our evaluation, and are path exhaustive, not compromising thoroughness for its efficiency. The nearly instant pathfinding times on a grid with over at most 2 million pixels validates our choice to choose a search based rather than sampling based approach.
+The pure pursuit controller, built utilizing the previously designed localization node, follows the trajectory the path planning algorithm designs to an error of less than 0.2 meters. This error can be further reduced using a variable lookahead distance, in which the racecar will target segments along the designed trajectory at an adjusted distance to the racecar in order to more closely adhere to trajectories of various shapes.
 
 
 ## Lessons Learned (Lesson in tech and CI from each person)
@@ -246,3 +253,19 @@ When testing nodes on the robot, it’s important to routinely verify that comma
 #### Communication
 
 Being separated from the team for a week prevented me from easily collaborating on the aspects of this project that required in-person work. However, this separation and inability to collaborate enabled me to wrap up another aspect of our project that needed to be improved. Though having all members of the team working towards the same immediate goal is the default, it precludes us from devoting the time necessary to integrate our past work with our current requirements. 
+
+### Prajwal
+
+#### Technical 
+I found it was particularly helpful to create little test sketches to ensure the operation of various segments of code before integrating them into the main program. Particularly with pure pursuit—which had a number of operations that needed to happen one after the other—piecewise testing allowed us to confirm that every individual segment in the chain of operations was working correctly and debug efficiently if it was not.
+#### Communication
+Having another pair of eyes look at existing code or simply explaining it to someone else proved to be very useful for debugging. This not only lets someone with a fresh perspective weigh in on the problem, but more importantly, the act of explaining a solution forces us to think more critically about it and makes it easy to spot errors.
+
+### Mary
+
+#### Technical 
+I think going to office hours as much as possible was critical to helping me finish the path planner. At the beginning, I was blocked on things that I didn’t think would be the hardest part of the path planner, like pixel-to-real world conversion or visualization of the trajectories. The solutions for these issues weren’t very hard, but it was so important to get them fixed as soon as possible, because they were essential to debugging and verifying our path planning algorithm. As such, TA help was invaluable, because they already had experience with most of these bugs. Going to office hours saved me from a lot of time and unnecessary effort.
+
+#### Communication 
+We did encounter an unprecedented difficulty in this lab– one of our teammates got COVID. Of course, they couldn’t come on-campus, so we reassigned parts and figured out a timeline that would allow them to maximize their contribution to the project, despite them not being able to be with us in-person. Also, I found it useful to work with a second teammate on the path-planning module, because we could walk through the code together and bounce ideas off of each other.
+Our teamwork led to us achieving a super speedy and accurate implementation of the A star graph search algorithm.
