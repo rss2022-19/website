@@ -33,7 +33,8 @@ Overall, search-based planning essentially breaks down two stages: first we need
 #### Determining Realistic Collision-free Search Space (Mary)
 First step, we need to determine the search space of the problem, that is, where the robot could be without colliding with obstacles. We have prior knowledge of its environment, a 1300x1730 (pixel-unit) occupancy map of the stata basement. This occupancy map is a binary array, 1 where there is an obstacle and 0 otherwise. This occupancy map would be sufficient, if our robot was a point mass. However, in real life, our robot has dimensions (height, width, etc), which we need to take into account when constructing our collision-free search space. To address this, we use cv2’s dilation tool to dilate the occupied portions of the occupancy map, as shown in Figure 1. We can see from the figure that dilating the occupancy map results in a realistic collision-free space for our robot. (Determining how much we needed to dilate the occupancy map was an empirical process; in other words, we eyeballed and adjusted the dilation process based on the racecar experiments we observed in simulation and in real life).
 
-
+![Occupancy Map](lab6/occupancy.png){width=50%}
+![Occupancy Map Dilated](lab6/occupancy_dilated.png){width=50%}
 
 #### Discretizing Continuous Search Space into Pixel-based Grid Space (Mary)
 
@@ -177,7 +178,8 @@ The figures below show the results of path planning and pure pursuit in simulati
 
 
 
-
+![Pure Pursuit Path 0](lab6/ppu_testing0_path.jpg){width=25%}
+![Pure Pursuit Graph 0](lab6/ppu_testing0_graph.png){width=75%}
 
 <!-- Stick PPU Testing 0 -->
 
@@ -186,6 +188,9 @@ The figures below show the results of path planning and pure pursuit in simulati
 Once we were confident in simulation, we moved forward to running pure pursuit at the car level, and tested it in person with a variety of paths. Some notable outcomes are that pure pursuit was successful in navigating through Stata basement when turns were wider. However, in the case of tight corners, the car was unable to clear the corner. This is due to our static lookahead distance. In order to improve this, we should implement a variable lookahead distance to be smaller when the path has high curvature, and larger when the path is straighter.  The images below demonstrate the cars ability to use pure pursuit navigate along straight lines and wider turns according to a path created by our path planner. Again you can see that the distance error of pure pursuit is extremely low. The car manages to stay within 0.15m from the planned path, and the spikes in this error can once again be attributed to areas of higher curvature of the path. 
 
 <!-- Stick PPU Testing 1 -->
+
+![Pure Pursuit Path 1](lab6/ppu_testing1_path.jpg){width=25%}
+![Pure Pursuit Graph 1](lab6/ppu_testing1_graph.png){width=75%}
 
 
 ## Updated Safety Controller Evaluation (Sean)
