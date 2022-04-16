@@ -50,7 +50,7 @@ $$A_{pix \rightarrow rw} \left ( \begin{bmatrix}x_{pix}\\ y_{pix}\\ \frac{1}{MR}
 
 To convert from real-world to pixel, we invert the process: multiplying by the inverse of $A_{pix \rightarrow rw}$ and dividing by the map resolution. 
 
-$​​$(A_{pix \rightarrow rw})^{-1} \begin{bmatrix} x_{rw}\\ y_{rw}\\ 1\end{bmatrix}  * \frac{1}{MR} = \begin{bmatrix}x_{pix}\\ y_{pix}\\\frac{1}{MR}\end{bmatrix}$$
+$$(A_{pix \rightarrow rw})^{-1} \begin{bmatrix} x_{rw}\\ y_{rw}\\ 1\end{bmatrix}  * \frac{1}{MR} = \begin{bmatrix}x_{pix}\\ y_{pix}\\\frac{1}{MR}\end{bmatrix}$$
 
 Giving a high-level overview of how these conversions will be utilized, our path planner will be given a start point and end point, both of which are real-world coordinates. As our path planner’s graph search algorithm operates in the pixel state space, we convert these real-world coordinates into pixel coordinates and pass them into our planner. If there is a possible path, our planner will find this path of pixel points and convert them back to real-world coordinates, feeding that real-world trajectory to the pure pursuit part of the pipeline.
 
