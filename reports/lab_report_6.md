@@ -134,18 +134,23 @@ For the second part of our path planner evaluation, we decided to compare planne
 We can see from the test cases below that the planner consistently outperforms the human, returning a path that requires less distance for the racecar to travel. The main reason for this out-performance is the fact that the planner is able to move in ways that a human would not intuitively move. For instance, the planner tends to hug the walls and only moves across the hall when it absolutely has to (i.e. when it has to make a turn in the opposite direction or when it is nearing the goal point, which is closer to the opposite wall). In contrast, when walking along a path, humans usually prefer to move along the center and maximize their distance from the walls. The planner has no such preferences and always seeks to move in whatever way that gets the racecar to its destination most efficiently.
 
 
-Test case 0:
+##### Test case 0
 
 |Human: 28.228|Planner: 26.047|
-|:==:|:==:|
+|:--:|:--:|
 |![TC0 Handdrawn](lab6/tc0_hand.png){width=50%}|![TC0 Planned](lab6/tc0_pplan.png){width=50%}|
 
-Test case 1:
-Human	: 73.721			         Planner: 70.823
- 
+##### Test case 1
 
-Test case 2:
-Human: 55.542			          Planner: 54.652
+|Human: 73.721|Planner: 70.823|
+|:--:|:--:|
+|![TC1 Handdrawn](lab6/tc1_hand.png){width=50%}|![TC1 Planned](lab6/tc1_pplan.png){width=50%}|
+
+##### Test case 2
+
+|Human: 55.542|Planner: 54.652|
+|:--:|:--:|
+|![TC2 Handdrawn](lab6/tc2_hand.png){width=50%}|![TC2 Planned](lab6/tc2_pplan.png){width=50%}|
 
 
 For these test cases, we also made sure to create situations where the robot/human would have more than one viable path to their destination. Of course, the human had no problem ascertaining which path would be most convenient, and we wanted to ensure that the robot would also have such sensibilities. As we can see from these test cases, the robot always picks the most optimal choice.
