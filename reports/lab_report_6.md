@@ -6,7 +6,7 @@
 
 # Lab 6 Report: "Go Here, Go There, Go Everyehere!" Path Planning and Pure Pursuit with Team 19
 
-## Introduction 
+## Introduction (Praj)
 
 As we iterate on our car’s ability to autonomously navigate its environment, a crucial capability is being able to maneuver to any reachable destination. The process to achieve this goal includes two components: path planning and pure pursuit. 
 
@@ -26,7 +26,7 @@ In the early stages of the project, we considered two approaches as strong candi
 
 Having an 1300x1730 (pixel units) occupancy grid of our environment from the beginning of the project, our problem lended itself to a straightforward discrete representation as a pixel-unit grid. Moreover, our state space is very small, a mere (x,y) coordinate space. With these numbers in mind, we determined that it would be more than feasible to tackle our problem with a search-based planner. In addition, we noted that the completeness guarantees of search-based planning would be extremely helpful to achieving efficient paths for our racecar. Thus, we decided to implement a search-based planner.
 
-### Path Planning Technical Implementation
+### Path Planning Technical Implementation (Mary)
 
 Overall, search-based planning essentially breaks down two stages: first we need to turn the problem into a discrete graph representation; second we need to search this graph for the most optimal path. 
 
@@ -60,9 +60,9 @@ Giving a high-level overview of how these conversions will be utilized, our path
 
 Specifically, among the search-based algorithms, our team chose to use the A* algorithm due to its guarantee of optimality within a reasonable timeframe. A* is the adaptation of Dijkstra’s algorithm with the insertion of a heuristic function, which estimates the cost of the path from the node under evaluation to the end node. Dijkstra’s algorithm is a graph algorithm that guarantees the lowest cost path in a weighted graph from a start to end node. If implemented with a priority queue, A* is essentially Dijkstra’s algorithm, except that the priority of items is the cost of the path up to the last node of the path + the heuristic from the last node of the path to the end goal.
 
-When implementing A*, we had to choose a heuristic for the algorithm to use, where the heuristic heavily affects what kind of path and and the runtime of the algorithm. The cost of the path that our code uses is the Manhattan distance of the path, as that most closely resembles what the robot will do on the pixel map, where moving diagonally costs slightly more than moving in a straight line due to the constraints of physical distances. The optimal heuristic is the exact cost of the path to the end goal, which would guarantee minimal runtime and shortest path. However, Manhattan distances would be impossible to evaluate as a heuristic, as we would need the exact path that we would use to get to the end goal, which is what we are trying to solve for! So we must find another heuristic. An important property of the heuristic is that it never predicts a cost more than the actual cost of the exact path, in other words, the heuristic should lowerbound the actual path cost, if we want to maintain the guarantee of shortest path (even at the cost of runtime: a function that consistently reports a cost under the actual path cost will take a longer time to run than one that had the exact cost, but will return the same optimal path, rather than a function that consistently reports over the exact cost of the path, which will neither guarantee an optimal path nor a low runtime). With this in mind, the robot uses the Euclidean distance between the end node and the goal, as the distance is always less than or equal to the Manhattan distance between 2 points.
+When implementing A*, we had to choose a heuristic for the algorithm to use, where the heuristic heavily affects what kind of path and and the runtime of the algorithm. The cost of the path that our code uses is the Manhattan distance of the path, as that most closely resembles what the robot will do on the pixel map, where moving diagonally costs slightly more than moving in a straight line due to the constraints of physical distances. The optimal heuristic is the exact cost of the path to the end goal, which would guarantee minimal runtime and shortest path. However, Manhattan distances would be impossible to evaluate as a heuristic, as we would need the exact path that we would use to get to the end goal, which is what we are trying to solve for! So we must find another heuristic. An important property of the heuristic is that it never predicts a cost more than the actual cost of the exact path, in other words, the heuristic should lowerbound the actual path cost, if we want to maintain the guarantee of shortest path (even at the cost of runtime: a function that consistently reports a cost under the actual path cost will take a longer time to run than one that had the exact cost, but will return the same optimal path, rather than a function that consistently reports over the exact cost of the path, which will neither guarantee an optimal path nor a low runtime relative to the exact cost). With this in mind, the robot uses the Euclidean distance between the end node and the goal, as the distance is always less than or equal to the Manhattan distance between 2 points.
 
-### Pure Pursuit
+### Pure Pursuit (Praj)
 Once an optimal trajectory is returned by the path planning module, pure pursuit takes over to drive the robot towards the calculated waypoints. Pure pursuit is a control algorithm that steers the robot through the planned path by determining intermediate goal positions and calculating the curvature that will get the vehicle to that point.
 The first step is placing the robot on the map with the help of the lidar-based localization package developed in the previous lab exercise. Once the coordinates of the robot in the map frame are returned, we can use it to find the segment on the calculated path that is nearest to the robot. The path, which is represented as a series of points on the map, is checked iteratively beginning with the segment between the first and second points, followed by the segment between the second and third points, and so on. Equations (1) through (3) show how distance to each path segment between points p1 and p2 is calculated given the robot’s position q.
 $$p_1 = (x_1,y_1)\quad p_2 = (x_2,y_2)\quad q = (x_R,y_R)$$
@@ -109,9 +109,9 @@ Because the rectangular area is larger and further from the racecar than the sho
 
 ## Experimental Evaluation
 
-###Path Planner Evaluation (Mary)
+### Path Planner Evaluation (Mary)
 
-#### Testing Path Planner Robustness to Various Paths
+#### Testing Path Planner Robustness to Various Paths (Mary)
 The first thing we did to evaluate our path planner was run it through various test cases and observe if it was able to find a path if the goal was reachable, or otherwise, return a “Path Not Found” message. Here, we included images the paths generated from the test cases.
 
 ![TC0: Short straight path](lab6/short_path.png)
@@ -129,7 +129,7 @@ We also had a test case for impossible paths, where we placed the goal point in 
 
 For these test cases, we also noted the amount of time our code took to run the A* algorithm. The planner always took less than 1 second to carry out A star search, even for the case where a path was not reachable (Test 4: leftmost to rightmost corner of the map). As such, it seems there is not much computational tradeoff for having a complete path planning solution.
 
-#### Testing Path Planner vs. Human
+#### Testing Path Planner vs. Human (Mary)
 For the second part of our path planner evaluation, we decided to compare planner-generated paths with human-drawn paths. We asked a member of our team, who did not work on the planner, upon being given a start and end point, to draw the likely path on the map that they would naturally plan for themselves to walk. We have included pictures of the human-drawn path (left) and the planner-generated path (right), as well as each path’s total distance.
 
 We can see from the test cases below that the planner consistently outperforms the human, returning a path that requires less distance for the racecar to travel. The main reason for this out-performance is the fact that the planner is able to move in ways that a human would not intuitively move. For instance, the planner tends to hug the walls and only moves across the hall when it absolutely has to (i.e. when it has to make a turn in the opposite direction or when it is nearing the goal point, which is closer to the opposite wall). In contrast, when walking along a path, humans usually prefer to move along the center and maximize their distance from the walls. The planner has no such preferences and always seeks to move in whatever way that gets the racecar to its destination most efficiently.
@@ -167,7 +167,7 @@ Combined, the path planner and pure pursuit controller scored 3.98 out of 4.0. A
 ![Integrated graph showing staff solution, path planner path, and pure pursuit path](https://i.imgur.com/Wv4zxdP.png)
 
 
-### Pure Pursuit Evaluation 
+### Pure Pursuit Evaluation (Stephanie)
 
 Pure pursuit testing took place in a few stages. First, we needed to test the ability of the controller in isolation. To do so, we constructed very simple trajectories in simulation to run the algorithm against. During this stage, we used our own judgment to determine whether or not we considered pure pursuit operational enough to move forward to the next step of testing.
 
@@ -225,7 +225,7 @@ To evaluate the safety controller, we ran both the original and predictive safet
 
 The predictive safety controller continues to perform at high speeds and sharp angles, while the original safety controller is over cautious and prevents the car from returning to its original position at speeds as low as 1 meter per second. 
 
-## Conclusion 
+## Conclusion (Sean)
 
 Both our path planning algorithm and our pure pursuit controller are effective in navigating the racecar to its destination. The path planning algorithm, through intelligent use of map discretization and management of nodes in the location queue, is capable of finding paths on time spans described in milliseconds. These paths meet the requirements of the Gradescope testing, scoring over 2.99/3, beat human intuition in path construction as shown in our evaluation, and are path exhaustive, not compromising thoroughness for its efficiency. The nearly instant pathfinding times on a grid with over at most 2 million pixels validates our choice to choose a search based rather than sampling based approach.
 The pure pursuit controller, built utilizing the previously designed localization node, follows the trajectory the path planning algorithm designs to an error of less than 0.2 meters. This error can be further reduced using a variable lookahead distance, in which the racecar will target segments along the designed trajectory at an adjusted distance to the racecar in order to more closely adhere to trajectories of various shapes.
