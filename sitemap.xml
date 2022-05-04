@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://rss2022-19.github.io/website/</loc>
+    </url>
+    <url>
+        <loc>https://rss2022-19.github.io/website/labs/</loc>
+    </url>
+    <url>
+        <loc>https://rss2022-19.github.io/website/labs/final-challenge/</loc>
+        <lastmod>2022-05-04</lastmod>
+    </url>
+    <url>
+        <loc>https://rss2022-19.github.io/website/labs/lab3/</loc>
+        <lastmod>2022-04-13</lastmod>
+    </url>
+    <url>
+        <loc>https://rss2022-19.github.io/website/labs/lab4/</loc>
+        <lastmod>2022-04-13</lastmod>
+    </url>
+    <url>
+        <loc>https://rss2022-19.github.io/website/labs/lab5/</loc>
+        <lastmod>2022-04-13</lastmod>
+    </url>
+    <url>
+        <loc>https://rss2022-19.github.io/website/labs/lab6/</loc>
+        <lastmod>2022-04-13</lastmod>
+    </url>
+</urlset>

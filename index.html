@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>RSS Team 19</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+<link rel="stylesheet" href="https://rss2022-19.github.io/website/style.css">
+
+    <style>
+        /* Full height image header */
+        .title_img {
+            background-position: center;
+            background-size: cover;
+            background-image: url("https://rss2022-19.github.io/website/img/mit.jpg");
+            height: 30%;
+            /* max-height: 30%; */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- If you change something in the Navbar you have to change it on each page (sit on top) -->
+    <!-- MAKE SURE YOU GET THE RELATIVE PATHS RIGHT FOR THE NAV BAR!!!!-->
+    <div class="w3-top">
+        <div class="w3-bar w3-white w3-card" id="myNavbar">
+            <a href="https://rss2022-19.github.io/website/#home" class="w3-bar-item w3-button w3-wide">RSS Team 19</a>
+            <!-- Right-sided navbar links -->
+            <div class="w3-right w3-hide-small">
+                <a href="https://rss2022-19.github.io/website/#about" class="w3-bar-item w3-button">About</a>
+                <a href="https://rss2022-19.github.io/website/labs/" class="w3-bar-item w3-button"><i
+                        class="fa fa-folder"></i>Labs</a>
+                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="w3-bar-item w3-button"><i
+                        class="fa fa-camera"></i>Videos</a>
+                <a href="https://github.com/rss2022-19" class="w3-bar-item w3-button"><i
+                        class="fa fa-github-square"></i>Github</a>
+            </div>
+            <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+            <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
+                onclick="w3_open()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Sidebar on small screens when clicking the menu icon -->
+    <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large"
+        style="display:none" id="mySidebar">
+        <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close
+            X</a>
+        <a href="https://rss2022-19.github.io/website/#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+        <a href="https://rss2022-19.github.io/website/labs/" onclick="w3_close()" class="w3-bar-item w3-button">Labs</a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" onclick="w3_close()"
+            class="w3-bar-item w3-button">Videos</a>
+        <a href="https://github.com/rss2022-19" onclick="w3_close()" class="w3-bar-item w3-button">Github</a>
+    </nav>
+    <!-- End of repeated content on each page-->
+
+    
+<!-- Header with full-height image -->
+<header class="title_img w3-display-container w3-grayscale-min" id="home">
+    <div class="w3-display-bottommiddle w3-text-white w3-center">
+        <h2>Team 19: Sean Crozier & the Tim Beavers</h2>
+        <p><a href="https://youtu.be/xLZU6TcSmRo" style="width:100%"
+                class="w3-button w3-white w3-opacity w3-hover-opacity-off">
+                Innovation starts somewhere, so why not let it start here?
+            </a></p>
+    </div>
+</header>
+
+<div class="w3-container w3-white" style="padding:5% 5%">
+    <div class="w3-card team_member">
+        <img class="headshot" src="img/wall_e.jfif">
+        <h4>Hungry Tim Beaver</h4>
+        <p>marylau@mit.edu</p>
+        <p>Course 6-2 Class of 2023. I live to eat.
+        </p>
+    </div>
+    <div class="w3-card team_member">
+        <img class="headshot" src="img/r2.jpg">
+        <h4>Bim Teaver</h4>
+        <p>uokwo@mit.edu</p>
+        <p>Course 6-9 Class of 2022. Following in the footsteps of
+            Com Truise and Sen Bhapiro.
+        </p>
+    </div>
+    <div class="w3-card team_member">
+        <img class="headshot" src="img/wall_e.jfif">
+        <h4>Tim Beaver</h4>
+        <p>tbeaver@mit.edu</p>
+        <p>These are some template bios; fill this in for each of your team members!
+        </p>
+    </div>
+    <div class="w3-card team_member">
+        <img class="headshot" src="img/r2.jpg">
+        <h4>Tim Beaver</h4>
+        <p>tbeaver@mit.edu</p>
+        <p>These are some template bios; fill this in for each of your team members!
+        </p>
+    </div>
+    <div class="w3-card team_member">
+        <img class="headshot" src="img/wall_e.jfif">
+        <h4>Sean Crozier</h4>
+        <p>crozier@mit.edu</p>
+        <p> Course 16 Class of 2022!
+        </p>
+    </div>
+</div>
+
+<!-- Contact Section -->
+<div class="w3-container w3-grey" style="padding:5% 5%;text-align:center;" id="about">
+    <div class="w3-card w3-white" style="width:100%">
+        <h1>About Us</h1>
+    </div>
+    <div class="w3-cell w3-red" style="width:30%;float:left;min-height: 200px;">
+        <i class="fa fa-folder"></i>
+        <!--Put an image here or something?-->
+        <p>Do something that is unique here. (You can change this to team values or something?)</p>
+    </div>
+    <div class="w3-cell w3-white" style="width:30%;margin-left:5%;float:left;min-height: 200px;">
+        <i class="fa fa-folder"></i>
+        <!--Put an image here or something?-->
+        <p>The TAs are not that unique, so we are just writing a lot of filler things here so we look cool.</p>
+    </div>
+    <div class="w3-cell w3-blue" style="width:30%;margin-left:5%;float:left;min-height: 200px;">
+        <i class="fa fa-folder"></i>
+        <!--Put an image here or something?-->
+        <p>Si vos es pulchellus frigus hanc: et admonitus in hoc genere digna est. It tristis et non dederint tibi.
+            Benediximus</p>
+    </div>
+</div>
+
+
+    <div class="w3-container w3-black">
+        <footer class="w3-center">
+            <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank"
+                    class="w3-hover-text-green">w3.css</a> and <a href="https://getzola.org" title="Zola"
+                    target="_blank">Zola</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Toggle between showing and hiding the sidebar when clicking the menu icon
+        var mySidebar = document.getElementById("mySidebar");
+
+        function w3_open() {
+            if (mySidebar.style.display === 'block') {
+                mySidebar.style.display = 'none';
+            } else {
+                mySidebar.style.display = 'block';
+            }
+        }
+
+        // Close the sidebar with the close button
+        function w3_close() {
+            mySidebar.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
